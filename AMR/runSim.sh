@@ -2,6 +2,7 @@
 ### RUN OPENFOAM ###
 . /usr/lib/openfoam/openfoam2212/etc/bashrc
 
+cp -r 0.orig 0
 cd surfaceMeshes
 surfaceAdd inlet.stl wall.stl geometry.stl
 surfaceAdd outlet.stl geometry.stl geometry.stl
