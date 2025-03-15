@@ -1,0 +1,158 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2212                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+application     simpleFoam;
+
+startFrom       startTime;
+
+startTime       0;
+
+stopAt          endTime;
+
+endTime         500;
+
+deltaT          1;
+
+writeControl    timeStep;
+
+writeInterval   250;
+
+purgeWrite      0;
+
+writeFormat     binary;
+
+writePrecision  6;
+
+writeCompression off;
+
+timeFormat      general;
+
+timePrecision   6;
+
+graphFormat     raw;
+
+runTimeModifiable true;
+
+functions
+{
+    #include "derivedFields"
+    //#include "sampling"
+    // #include "samplingDebug"
+	
+	pressureOutlet
+	{
+		type				surfaceFieldValue;
+		libs            (fieldFunctionObjects);
+ 		enabled 			true;
+		writeControl	timeStep;
+		writeInterval	1;
+		writeFields		false;
+		regionType patch;
+		name outlet;
+		fields (pTotal);
+		operation average;
+	}
+	pressureInlet
+	{
+		type				surfaceFieldValue;
+		libs            (fieldFunctionObjects);
+ 		enabled 			true;
+		writeControl	timeStep;
+		writeInterval	1;
+		writeFields		false;
+		regionType patch;
+		name inlet;
+		fields (pTotal);
+		operation average;
+	}
+	
+	gradP
+	{
+		// Mandatory entries
+		type            grad;
+		libs            ("libfieldFunctionObjects.so");
+		field           p;
+
+		// Optional (inherited) entries
+		result          gradPcalc;
+		//region          region0;
+		enabled         true;
+		log             true;
+		//timeStart       0.25;
+		//timeEnd         1000;
+		executeControl  timeStep;
+		executeInterval 1;
+		writeControl    writeTime;
+		//writeInterval   9;
+	}
+
+
+    magGradP
+    {
+          type            mag;
+          libs            ("libfieldFunctionObjects.so");
+          field           gradPcalc;
+          result          magGradPcalc;
+          enabled         true;
+          log             true;
+          executeControl  timeStep;
+          executeInterval 1;
+          writeControl    writeTime;
+          //writeInterval   9;
+    }
+
+ 	magU
+    {
+        type            mag;
+        libs            ("libfieldFunctionObjects.so");
+        field           U;
+        result          magUcalc;  // Stores |U| as a scalar field
+        enabled         true;
+        log             false;
+        executeControl  timeStep;
+        executeInterval 1;
+        writeControl    none;
+    }
+
+    gradMagU
+    {
+        type            grad;
+        libs            ("libfieldFunctionObjects.so");
+        field           magUcalc;  // Compute gradient of velocity magnitude
+        result          gradMagUcalc;
+        enabled         true;
+        log             false;
+        executeControl  timeStep;
+        executeInterval 1;
+        writeControl    writeTime;  // Save at regular intervals
+    }
+
+	magGradMagU
+    {
+          type            mag;
+          libs            ("libfieldFunctionObjects.so");
+          field           gradMagUcalc;
+          result          magGradMagUcalc;
+          enabled         true;
+          log             true;
+          executeControl  timeStep;
+          executeInterval 1;
+          writeControl    writeTime;
+    }
+}
+
+
+// ************************************************************************* //

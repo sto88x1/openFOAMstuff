@@ -1,0 +1,54 @@
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      dynamicMeshDict;
+}
+
+dynamicFvMesh dynamicRefineFvMesh;
+
+dynamicRefineFvMeshCoeffs
+{
+    // Refine every 'n' time steps
+    refineInterval 100;
+
+    // Field to be monitored for refinement
+    field magGradMagUcalc;
+    //field magGradPcalc;
+
+    //=====>> using magGradPcalc <<=====
+/*     // Thresholds for refinement
+    lowerRefineLevel 15000;
+    upperRefineLevel 1e10;
+    // Unrefine cells when 'field' is below this level
+    unrefineLevel 10000; */
+
+    //=====>> using magGradMagUcalc <<=====
+    // Thresholds for refinement 
+    lowerRefineLevel 1000;
+    upperRefineLevel 2500;
+    // Unrefine cells when 'field' is below this level
+    unrefineLevel 999;
+
+    // Number of buffer layers between refined and unrefined regions
+    nBufferLayers 2;
+
+    // Maximum allowable refinement level
+    maxRefinement 1;
+
+    // Limit on the total number of cells
+    maxCells 2000000;
+
+    // Write the refinement level as a field
+    dumpLevel true;
+	
+	correctFluxes   
+    (
+        (phi U)
+    //(nHatf none)
+    //(rhoPhi none)
+    //(ghf none)
+	);
+}
