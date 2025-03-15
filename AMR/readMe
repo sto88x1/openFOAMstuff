@@ -1,1 +1,56 @@
+Adaptive Mesh Refinement (AMR) Case - OpenFOAM v2412
+======================================================
+Author: Sergio Tosi
+Date: 2025-03-15
+OpenFOAM Version: v2412 (ESI Version)
 
+Overview:
+---------
+This case demonstrates Adaptive Mesh Refinement (AMR) in OpenFOAM v2412.
+Mesh refinement is based on:
+  - Pressure gradient magnitude (magGradPcalc)
+  - Velocity magnitude gradient magnitude (magGradMagUcalc)
+
+Case Structure:
+---------------
+0/                 -> Initial conditions
+constant/          -> Physical properties and mesh setup
+  ├── dynamicMeshDict (AMR configuration)
+  ├── transportProperties (Fluid properties)
+system/            -> Solver and numerical settings
+  ├── controlDict (Simulation control)
+  ├── fvSchemes (Numerical schemes)
+  ├── fvSolution (Solver controls)
+
+Setup & Execution:
+------------------
+1. Move to the case directory:
+   cd /path/to/case_directory
+
+2. Generate the mesh:
+   cartesianMesh  -> not available in v2412 (ESI Version), use v2312/2212
+
+3. Run the solver:
+   - Serial: simpleFoam
+   - Parallel: mpirun -np <numProcessors> simpleFoam -parallel
+
+4. Post-processing:
+   - Open ParaView: paraFoam
+   - Export data: foamToVTK
+
+Key Features:
+-------------
+- Adaptive mesh refinement using a refinement field between two.
+- Function objects in controlDict automatically compute refinement criteria.
+- Refinement controlled via dynamicMeshDict.
+
+Notes:
+------
+- Adjust AMR thresholds in dynamicMeshDict for better results.
+- Check refinement levels in ParaView (postProcessing/ or foamToVTK).
+- Ensure combinedField is correctly computed before running AMR.
+
+Support:
+--------
+For questions or troubleshooting, refer to:
+  OpenFOAM User Guide: https://www.openfoam.com/documentation/
