@@ -1,0 +1,84 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2212                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+application     simpleFoam;
+
+startFrom       latestTime;
+
+startTime       0;
+
+stopAt          endTime;
+
+endTime         500;
+
+deltaT          1;
+
+writeControl    timeStep;
+
+writeInterval   500;
+
+purgeWrite      0;
+
+writeFormat     binary;
+
+writePrecision  6;
+
+writeCompression off;
+
+timeFormat      general;
+
+timePrecision   6;
+
+graphFormat     raw;
+
+runTimeModifiable true;
+
+functions
+{
+    #include "derivedFields"
+    //#include "sampling"
+    // #include "samplingDebug"
+	
+	pressureOutlet
+	{
+		type				surfaceFieldValue;
+		functionObjectLibs ("libfieldFunctionObjects.so");
+ 		enabled 			true;
+		writeControl	timeStep;
+		writeInterval	1;
+		writeFields		false;
+		regionType patch;
+		name outlet;
+		fields (pTotal);
+		operation average;
+	}
+	pressureInlet
+	{
+		type				surfaceFieldValue;
+		functionObjectLibs ("libfieldFunctionObjects.so");
+ 		enabled 			true;
+		writeControl	timeStep;
+		writeInterval	1;
+		writeFields		false;
+		regionType patch;
+		name inlet;
+		fields (pTotal);
+		operation average;
+	}		
+}
+
+
+// ************************************************************************* //
